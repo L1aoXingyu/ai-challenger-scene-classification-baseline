@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is the baseline of competition in ai challenger scene classification with ==[Gluon](https://mxnet.incubator.apache.org/versions/master/gluon/index.html)== implement. 
+This is the baseline of competition in ai challenger scene classification with **[Gluon](https://mxnet.incubator.apache.org/versions/master/gluon/index.html)** implement. 
 
 ## Requirements
 
