@@ -55,28 +55,30 @@ train_json = train_root + '/scene_train_annotations_20170904.json'
 train_img_path = train_root + '/scene_train_images_20170904/'
 train_set = SceneDataSet(train_json, train_img_path, transform_train)
 train_data = gl.data.DataLoader(
-    train_set, batch_size=32, shuffle=True, last_batch='keep')
+    train_set, batch_size=64, shuffle=True, last_batch='keep')
 
 valid_json = valid_root + '/scene_validation_annotations_20170908.json'
 valid_img_path = valid_root + '/scene_validation_images_20170908/'
 valid_set = SceneDataSet(valid_json, valid_img_path, transform_valid)
 valid_data = gl.data.DataLoader(
-    valid_set, batch_size=64, shuffle=False, last_batch='keep')
+    valid_set, batch_size=128, shuffle=False, last_batch='keep')
 
 # train_img_path = train_root + '/scene_train_images_20170904/'
-# train_iter = mx.image.ImageIter(batch_size=32, data_shape=(3, 224, 224),
-#                                path_imglist='./train_list.lst',
-#                                path_root=train_img_path,
-#                                shuffle=True)
+# train_iter = mx.image.ImageIter(
+#     batch_size=64,
+#     data_shape=(3, 224, 224),
+#     path_imglist='./train_list.lst',
+#     path_root=train_img_path,
+#     shuffle=True)
 # train_iter.augmentation_transform = transform_train
 
-# # In[8]:
-
 # valid_img_path = valid_root + '/scene_validation_images_20170908/'
-# valid_iter = mx.image.ImageIter(batch_size=64, data_shape=(3, 224, 224),
-#                                path_imglist='./valid_list.lst',
-#                                path_root=valid_img_path,
-#                                shuffle=False)
+# valid_iter = mx.image.ImageIter(
+#     batch_size=64,
+#     data_shape=(3, 224, 224),
+#     path_imglist='./valid_list.lst',
+#     path_root=valid_img_path,
+#     shuffle=False)
 # valid_iter.augmentation_transform = transform_valid
 
 criterion = gl.loss.SoftmaxCrossEntropyLoss()
@@ -109,35 +111,36 @@ def train(net, train_data, valid_data, num_epochs, lr, wd, ctx, lr_decay):
 
     prev_time = datetime.datetime.now()
     for epoch in range(num_epochs):
-        #         train_data.reset()
-        #         valid_data.reset()
+        # train_data.reset()
+        # valid_data.reset()
         train_loss = 0
         correct = 0
         total = 0
         for data, label in train_data:
-            #         for batch in train_data:
-            #             data = batch.data[0]
-            #             label = batch.label[0]
+            # for batch in train_data:
+            # data = batch.data[0].as_in_context(ctx)
+            # label = batch.label[0].as_in_context(ctx)
             bs = data.shape[0]
             data = data.as_in_context(ctx)
             label = label.as_in_context(ctx)
-            #             data_list = gl.utils.split_and_load(data, ctx, even_split=False)
-            #             label_list = gl.utils.split_and_load(label, ctx, even_split=False)
+            # data_list = gl.utils.split_and_load(data, ctx, even_split=False)
+            # label_list = gl.utils.split_and_load(label, ctx, even_split=False)
             with mx.autograd.record():
                 output = net(data)
                 loss = criterion(output, label)
 
-#                 outputs = [net(X) for X in data_list]
-#                 losses = [criterion(output, y) for output, y in zip(outputs, label_list)]
-#             for l in losses:
-#                 l.backward()
+            # outputs = [net(X) for X in data_list]
+            # losses = [criterion(output, y) for output, y in zip(outputs, label_list)]
+            # for l in losses:
+            #     l.backward()
             loss.backward()
             trainer.step(bs)
             train_loss += loss.sum().asscalar()
-            #             train_loss += sum([l.sum().asscalar() for l in losses]) / bs
-            #             correct += sum(
-            #                 [get_acc(output.as_in_context(ctx[0]), y.as_in_context(ctx[0]))
-            #                  for output, y in zip(outputs, label_list)])
+            # train_loss += sum([l.sum().asscalar() for l in losses]) / bs
+            # correct += sum([
+            #     get_acc(output.as_in_context(ctx[0]), y.as_in_context(ctx[0]))
+            #     for output, y in zip(outputs, label_list)
+            # ])
             correct += get_acc(output, label)
             total += bs
         writer.add_scalars('loss', {'train': train_loss / total}, epoch)
@@ -151,9 +154,9 @@ def train(net, train_data, valid_data, num_epochs, lr, wd, ctx, lr_decay):
             valid_total = 0
             valid_loss = 0
             for data, label in valid_data:
-                #             for batch in valid_data:
-                #                 data = batch.data[0]
-                #                 label = batch.label[0]
+                # for batch in valid_data:
+                # data = batch.data[0].as_in_context(ctx)
+                # label = batch.label[0].as_in_context(ctx)
                 bs = data.shape[0]
                 data = data.as_in_context(ctx)
                 label = label.as_in_context(ctx)
@@ -174,6 +177,7 @@ def train(net, train_data, valid_data, num_epochs, lr, wd, ctx, lr_decay):
                          (epoch, train_loss / total, correct / total))
         prev_time = cur_time
         print(epoch_str + time_str + ', lr ' + str(trainer.learning_rate))
+
 
 train(net, train_data, valid_data, num_epochs, lr, wd, ctx, lr_decay)
 
