@@ -1,11 +1,9 @@
-import json
-import os
-
 import mxnet as mx
 import numpy as np
 from mxnet import gluon as gl
 from mxnet import nd
-
+import json
+import os
 
 class SceneDataSet(gl.data.Dataset):
     def __init__(self, json_file, img_path, transform):
@@ -26,7 +24,7 @@ class SceneDataSet(gl.data.Dataset):
     def __len__(self):
         return len(self._img_list)
 
-
+    
 class TestDataSet(gl.data.Dataset):
     def __init__(self, img_path, transform):
         self._img_path = img_path
@@ -36,8 +34,9 @@ class TestDataSet(gl.data.Dataset):
     def __getitem__(self, idx):
         im_name = self._img_list[idx]
         im = mx.image.imread(os.path.join(self._img_path, im_name))
-        im1, im2, im3, im4 = self._transform(im)
-        return im1, im2, im3, im4
+        im0, im1, im2, im3, im4 = self._transform(im)
+        return im_name, im0, im1, im2, im3, im4
+
 
     def __len__(self):
         return len(self._img_list)

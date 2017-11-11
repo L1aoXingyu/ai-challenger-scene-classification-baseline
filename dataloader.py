@@ -8,12 +8,14 @@ from mxnet import nd
 
 def _batchify(batch):
     """Collate data into batch."""
-    im_name, im1, im2, im3, im4 = zip(*batch)
+    im_name, im0, im1, im2, im3, im4 = zip(*batch)
+    im0 = nd.stack(*im0)
     im1 = nd.stack(*im1)
     im2 = nd.stack(*im2)
     im3 = nd.stack(*im3)
     im4 = nd.stack(*im4)
-    return im_name, im1, im2, im3, im4
+    return im_name, im0, im1, im2, im3, im4
+
 
 
 class DataLoader(object):
