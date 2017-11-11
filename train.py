@@ -85,12 +85,12 @@ criterion = gl.loss.SoftmaxCrossEntropyLoss()
 
 # ctx = [mx.gpu(0), mx.gpu(1)]
 ctx = mx.gpu(0)
-num_epochs = 100
+num_epochs = 200
 lr = 0.1
 wd = 1e-4
 lr_decay = 0.1
 
-net = gl.model_zoo.vision.resnet50_v2(classes=80)
+net = gl.model_zoo.vision.resnet152_v2(classes=80)
 net.initialize(init=mx.init.Xavier(), ctx=ctx)
 net.hybridize()
 
@@ -111,6 +111,8 @@ def train(net, train_data, valid_data, num_epochs, lr, wd, ctx, lr_decay):
 
     prev_time = datetime.datetime.now()
     for epoch in range(num_epochs):
+        if epoch == 89 or epoch == 169:
+            trainer.set_learning_rate(trainer.learning_rate * lr_decay)
         # train_data.reset()
         # valid_data.reset()
         train_loss = 0
