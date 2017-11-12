@@ -8,13 +8,18 @@ from mxnet import nd
 
 def _batchify(batch):
     """Collate data into batch."""
-    im_name, im0, im1, im2, im3, im4 = zip(*batch)
+    im_name, im0, im1, im2, im3, im4, im5, im6, im7, im8, im9 = zip(*batch)
     im0 = nd.stack(*im0)
     im1 = nd.stack(*im1)
     im2 = nd.stack(*im2)
     im3 = nd.stack(*im3)
     im4 = nd.stack(*im4)
-    return im_name, im0, im1, im2, im3, im4
+    im5 = nd.stack(*im5)
+    im6 = nd.stack(*im6)
+    im7 = nd.stack(*im7)
+    im8 = nd.stack(*im8)
+    im9 = nd.stack(*im9)
+    return im_name, im0, im1, im2, im3, im4, im5, im6, im7, im8, im9
 
 
 

@@ -12,5 +12,10 @@ This is the baseline of competition in ai challenger scene classification with *
 
 ## Model
 
-The baseline model is [densenet](http://openaccess.thecvf.com/content_cvpr_2017/papers/Huang_Densely_Connected_Convolutional_CVPR_2017_paper.pdf).
+The baseline model is resnet50, run 100 epochs as baseline.
 
+
+
+## Result
+
+![](https://ws4.sinaimg.cn/large/006tNc79ly1flfdjwjq9aj30pq05k0tf.jpg)

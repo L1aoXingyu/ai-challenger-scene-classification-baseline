@@ -34,8 +34,8 @@ class TestDataSet(gl.data.Dataset):
     def __getitem__(self, idx):
         im_name = self._img_list[idx]
         im = mx.image.imread(os.path.join(self._img_path, im_name))
-        im0, im1, im2, im3, im4 = self._transform(im)
-        return im_name, im0, im1, im2, im3, im4
+        im0, im1, im2, im3, im4, im5, im6, im7, im8, im9 = self._transform(im)
+        return im_name, im0, im1, im2, im3, im4, im5, im6, im7, im8, im9
 
 
     def __len__(self):
